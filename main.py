@@ -7,7 +7,7 @@ headers = {
 }
 
 
-def get_number_png(subject, klass, number, autor, images="", new=""):
+def get_number_png(subject, klass, number, autor, images="", new="", check=""):
     if new == "new":
         req = requests.get(f"https://reshak.ru/reshebniki/{subject}/{klass}/{autor}/images{images}/new/{number}.png",
                            headers=headers)
@@ -17,10 +17,21 @@ def get_number_png(subject, klass, number, autor, images="", new=""):
     elif new == "part2":
         req = requests.get(f"https://reshak.ru/reshebniki/{subject}/{klass}/{autor}/images{images}/part2/{number}.png",
                            headers=headers)
+    elif new == "clear":
+        list_of_numbers = [32, 567, 633, 644]
+        if int(number) in list_of_numbers:
+            req = requests.get(f"https://reshak.ru/reshebniki/{subject}/{klass}/{autor}/images4/{number}.png",
+                               headers=headers)
+        else:
+            req = requests.get(f"https://reshak.ru/reshebniki/{subject}/{klass}/{autor}/{number}.png",
+                           headers=headers)
+    elif check == "check":
+        pass
     else:
         req = requests.get(f"https://reshak.ru/reshebniki/{subject}/{klass}/{autor}/images{images}/{number}.png",
                            headers=headers)
     return req.content
+
 
 
 

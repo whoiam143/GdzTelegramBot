@@ -22,6 +22,7 @@ numbers = {
     "algebra-8": 1153,
     "algebra-9": 1097,
     "geom-7-9": 1310,
+    "geom-10-11": 763,
 
 }
 
@@ -105,6 +106,30 @@ def start_menu(message):
         markup.row(algebra, geometry)
 
         #russkiy = types.KeyboardButton(text="Русский язык 9 Быстрова")
+        back = types.KeyboardButton(text="Назад")
+
+        markup.row(back)
+
+        bot.send_message(message.from_user.id, "Выбери предмет:", reply_markup=markup)
+
+    elif message.text == "10":
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        algebra = types.KeyboardButton(text="Алгебра 10 Мордкович")
+        geometry = types.KeyboardButton(text="Геометрия 10-11 Атанасян")
+        markup.row(algebra, geometry)
+
+        back = types.KeyboardButton(text="Назад")
+
+        markup.row(back)
+
+        bot.send_message(message.from_user.id, "Выбери предмет:", reply_markup=markup)
+
+    elif message.text == "11":
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        algebra = types.KeyboardButton(text="Алгебра 11 Мордкович")
+        geometry = types.KeyboardButton(text="Геометрия 10-11 Атанасян")
+        markup.row(algebra, geometry)
+
         back = types.KeyboardButton(text="Назад")
 
         markup.row(back)
@@ -231,18 +256,29 @@ def start_menu(message):
 
         bot.register_next_step_handler(message, send_number, "geometriya", "7", "atanasyan", "geom-7-9", images="1")
 
+    elif message.text == "Геометрия 10-11 Атанасян":
+        bot.send_message(message.chat.id, f"Введите нужный номер (1-{numbers.get('geom-10-11')})")
+
+        bot.register_next_step_handler(message, send_number, "geometriya", "10", "atanasyan10-11", "geom-10-11", new="clear")
+
+    elif message.text == "Алгебра 10 Мордкович":
+        bot.register_next_step_handler(message, send_number_mod, "algebra", "10", "mordkovich2", new="clear", check="check")
+
+
+
+
     else:
         create_bd()
         add_result(message.from_user.username, message.text)
 
 
-def send_number(message, subject, klass, autor, sub_subject, images="", new=False):
+def send_number(message, subject, klass, autor, sub_subject, images="", new="", check=""):
     flag = False
 
     while not flag:
         try:
             if 1 <= int(message.text) <= numbers.get(sub_subject):
-                bot.send_photo(message.chat.id, get_number_png(subject=subject, klass=klass, number=message.text, autor=autor, images=images, new=new))
+                bot.send_photo(message.chat.id, get_number_png(subject=subject, klass=klass, number=message.text, autor=autor, images=images, new=new, check=check))
                 flag = True
                 bot.register_next_step_handler(message, start_menu)
                 break
@@ -255,6 +291,17 @@ def send_number(message, subject, klass, autor, sub_subject, images="", new=Fals
             flag = True
             break
 
+
+def send_number_mod(message, subject, klass, autor, images="", new="", check=""):
+    bot.send_message(message.chat.id, f"Введите нужный номер 1-123 (Повторение) или 1.1-49.30 (через точку)")
+
+    try:
+        if 1 <= int(message.text) <= 123:
+            pass
+
+
+    except ValueError:
+        pass
 
 if __name__ == '__main__':
     bot.polling(none_stop=True, interval=0)
